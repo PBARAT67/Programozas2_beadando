@@ -1,0 +1,6 @@
+city,date,temperature,humidity,condition
+Budapest,2026-11-03,12.5,78,Cloudy
+Pecs,2026-11-03,14.2,65,Sunny
+Szeged,2026-11-03,13.8,70,PartlyCloudy
+Debrecen,2026-11-03,11.0,82,Rainy
+Gyor,2026-11-03,12.0,75,Windy

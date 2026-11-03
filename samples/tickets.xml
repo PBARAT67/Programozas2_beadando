@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <record>
+    <ticketId>TKT-001</ticketId>
+    <event>Koncert - Halott Penz</event>
+    <venue>Barba Negra</venue>
+    <price>8500</price>
+    <date>2026-12-15</date>
+  </record>
+  <record>
+    <ticketId>TKT-002</ticketId>
+    <event>Szinhaz - Macskajatek</event>
+    <venue>Nemzeti Szinhaz</venue>
+    <price>4500</price>
+    <date>2026-12-20</date>
+  </record>
+  <record>
+    <ticketId>TKT-003</ticketId>
+    <event>Sport - Fradi vs Ujpest</event>
+    <venue>Groupama Arena</venue>
+    <price>6200</price>
+    <date>2027-01-10</date>
+  </record>
+</document>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <record>
+    <isbn>978-0134685991</isbn>
+    <title>Effective Java</title>
+    <author>Joshua Bloch</author>
+    <year>2018</year>
+  </record>
+  <record>
+    <isbn>978-0201633610</isbn>
+    <title>Design Patterns</title>
+    <author>Gang of Four</author>
+    <year>1994</year>
+  </record>
+</document>

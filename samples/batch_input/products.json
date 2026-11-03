@@ -1,0 +1,20 @@
+[
+  {
+    "sku": "PRD-001",
+    "title": "Mechanical Keyboard",
+    "category": "Peripherals",
+    "price": "89.99"
+  },
+  {
+    "sku": "PRD-002",
+    "title": "Wireless Mouse",
+    "category": "Peripherals",
+    "price": "49.50"
+  },
+  {
+    "sku": "PRD-003",
+    "title": "Gaming Monitor 27\"",
+    "category": "Displays",
+    "price": "299.00"
+  }
+]

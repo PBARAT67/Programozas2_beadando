@@ -1,0 +1,30 @@
+[
+  {
+    "courseId": "PROG1",
+    "courseName": "Programozas 1",
+    "credits": "5",
+    "instructor": "Dr. Kiss Janos",
+    "semester": "2025/26/1"
+  },
+  {
+    "courseId": "PROG2",
+    "courseName": "Programozas 2",
+    "credits": "5",
+    "instructor": "Dr. Nagy Istvan",
+    "semester": "2025/26/2"
+  },
+  {
+    "courseId": "ADATB",
+    "courseName": "Adatbazisok",
+    "credits": "4",
+    "instructor": "Dr. Toth Maria",
+    "semester": "2025/26/2"
+  },
+  {
+    "courseId": "HALOZ",
+    "courseName": "Halozatok",
+    "credits": "4",
+    "instructor": "Dr. Szabo Laszlo",
+    "semester": "2026/27/1"
+  }
+]
