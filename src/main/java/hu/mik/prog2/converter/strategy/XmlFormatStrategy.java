@@ -47,6 +47,21 @@ public class XmlFormatStrategy extends AbstractFormatStrategy {
             dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 
             DocumentBuilder db = dbf.newDocumentBuilder();
+            db.setErrorHandler(new org.xml.sax.ErrorHandler() {
+                @Override
+                public void warning(org.xml.sax.SAXParseException exception) {
+                }
+
+                @Override
+                public void error(org.xml.sax.SAXParseException exception) throws org.xml.sax.SAXParseException {
+                    throw exception;
+                }
+
+                @Override
+                public void fatalError(org.xml.sax.SAXParseException exception) throws org.xml.sax.SAXParseException {
+                    throw exception;
+                }
+            });
             org.w3c.dom.Document xmlDoc = db.parse(inputStream);
             xmlDoc.getDocumentElement().normalize();
 
