@@ -163,8 +163,12 @@ java -jar target/datamorph-converter-1.0.0.jar --history
 ## 7. Sample Data Files
 Sample input files are provided in the `samples/` directory:
 - `samples/students.csv`: Tabular student records with quotes and commas.
+- `samples/weather.csv`: Weather observation metrics.
 - `samples/products.json`: Array of product objects.
+- `samples/courses.json`: Academic course records.
 - `samples/books.xml`: Standard XML document records.
+- `samples/tickets.xml`: Support ticket incident data.
+- `samples/batch_input/`: Dedicated folder with mixed file types for batch directory conversion testing.
 
 ---
 
