@@ -149,6 +149,7 @@ classDiagram
         +record(item) void
         +getHistorySortedNatural() List~ConversionHistoryItem~
         +getHistorySorted(cmp) List~ConversionHistoryItem~
+        +findById(id) Optional~ConversionHistoryItem~
         +clearHistory() void
         +getCount() int
     }

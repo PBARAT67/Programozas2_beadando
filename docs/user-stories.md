@@ -35,3 +35,13 @@
 - **Acceptance Criteria:**
   - Natural sorting orders items newest first using `Comparable<ConversionHistoryItem>`.
   - Additional sorting orders are available via `Comparator<ConversionHistoryItem>` (by execution time, file size, name, status).
+
+## User Story 5: Re-converting Files from History
+- **As a** user,
+- **I want to** select an item from my past conversion history and re-convert it to another format,
+- **So that** I don't have to re-type long file paths when chaining conversions or converting an output file further.
+- **Acceptance Criteria:**
+  - The system displays past conversion jobs with numbered indexes.
+  - The user can pick whether to re-convert the original source file or the previous output file.
+  - The user provides the new destination file path.
+  - The new conversion is executed and appended to the persistent history.

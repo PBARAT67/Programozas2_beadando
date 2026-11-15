@@ -68,6 +68,16 @@ public class HistoryService {
     }
 
     /**
+     * Finds a history item by its ID.
+     */
+    public synchronized java.util.Optional<ConversionHistoryItem> findById(String id) {
+        if (id == null) return java.util.Optional.empty();
+        return historyList.stream()
+                .filter(item -> item.getId().equalsIgnoreCase(id.trim()))
+                .findFirst();
+    }
+
+    /**
      * Clears all history in-memory and persistently.
      */
     public synchronized void clearHistory() throws ConverterException {
