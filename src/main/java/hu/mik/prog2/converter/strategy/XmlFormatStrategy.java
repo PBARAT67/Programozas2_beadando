@@ -47,6 +47,23 @@ public class XmlFormatStrategy extends AbstractFormatStrategy {
             dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 
             DocumentBuilder db = dbf.newDocumentBuilder();
+            // Custom ErrorHandler to prevent Xerces from dumping "[Fatal Error]" to stderr on invalid input
+            db.setErrorHandler(new org.xml.sax.ErrorHandler() {
+                @Override
+                public void warning(org.xml.sax.SAXParseException e) {
+                    // ignore warnings
+                }
+
+                @Override
+                public void error(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXParseException {
+                    throw e;
+                }
+
+                @Override
+                public void fatalError(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXParseException {
+                    throw e;
+                }
+            });
             org.w3c.dom.Document xmlDoc = db.parse(inputStream);
             xmlDoc.getDocumentElement().normalize();
 

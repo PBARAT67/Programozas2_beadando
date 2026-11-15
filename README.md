@@ -31,7 +31,7 @@ DataMorph solves this by providing:
 | **Exceptions** | Domain exception hierarchy: `ConverterException` (checked base), `UnsupportedFormatException`, and `InvalidFileStructureException` (stores line number and structural failure causes). |
 | **Persistence** | `JsonHistoryRepository` restores and persists conversion history between runs to `history.json`. All file I/O uses strict `try-with-resources`. |
 | **Design Pattern** | **Strategy Pattern** (interchangeable format algorithms) & **Factory Method** (`FormatStrategyFactory`). |
-| **Testing** | 17 automated **JUnit 5** tests covering parsing, writing, exceptions, batch processing, and sorting. |
+| **Testing** | 18 automated **JUnit 5** tests covering parsing, writing, exceptions, batch processing, sorting, and history lookups. |
 | **Build** | Standard Maven project with reproducible build (`mvn clean package`). |
 
 ---
@@ -88,6 +88,14 @@ hu.mik.prog2.converter/
     └── ConsoleMenu.java               # Interactive console user interface
 ```
 
+### UML Class Diagram Formats (`docs/`)
+The diagram is provided in multiple complementary formats for maximum viewability and grading convenience:
+- **`docs/uml-viewer.html`**: **Interactive zoomable viewer** in pure HTML/JS (zoom in/out with mouse wheel or buttons from 10% to 600%, drag to pan). Works 100% offline in any web browser.
+- **`docs/uml-class-diagram.svg`**: **Vector graphic format** (infinitely scalable without blur, zoomable in any browser with `Ctrl + Scroll`).
+- **`docs/uml-class-diagram.png`**: High-resolution raster image.
+- **`docs/uml-class-diagram.puml`**: Editable PlantUML source code.
+- **`docs/uml-class-diagram.md`**: GitHub-viewable Mermaid class diagram.
+
 ---
 
 ## 5. Prerequisites & Build Instructions
@@ -100,7 +108,7 @@ hu.mik.prog2.converter/
 Clone the repository and build the project from clean checkout:
 
 ```bash
-# Clean, compile, run all 17 JUnit 5 tests, and package executable JAR
+# Clean, compile, run all 18 JUnit 5 tests, and package executable JAR
 mvn clean package
 ```
 
@@ -127,10 +135,11 @@ This opens the interactive text menu:
 1. Convert a single file
 2. Convert all files in a folder (Batch)
 3. View conversion history (with sorting)
-4. View conversion statistics
-5. Clear conversion history
-6. Exit
-Select an option [1-6]:
+4. Re-convert a file from history
+5. View conversion statistics
+6. Clear conversion history
+7. Exit
+Select an option [1-7]:
 ```
 
 ### 6.2 Command-Line Mode (Scriptable)
