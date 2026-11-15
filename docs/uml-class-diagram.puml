@@ -168,6 +168,7 @@ package "hu.mik.prog2.converter.service" {
         + record(item: ConversionHistoryItem): void
         + getHistorySortedNatural(): List<ConversionHistoryItem>
         + getHistorySorted(cmp: Comparator<ConversionHistoryItem>): List<ConversionHistoryItem>
+        + findById(id: String): Optional<ConversionHistoryItem>
         + clearHistory(): void
         + getCount(): int
         + getSuccessfulCount(): long

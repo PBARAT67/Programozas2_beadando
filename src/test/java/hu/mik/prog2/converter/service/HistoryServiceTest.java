@@ -86,6 +86,21 @@ class HistoryServiceTest {
     }
 
     @Test
+    void testFindById() {
+        ConversionHistoryItem item = new ConversionHistoryItem(
+                "target-id-123", LocalDateTime.now(), "source.csv", "dest.json",
+                FormatType.CSV, FormatType.JSON, 400, 10, 15, true, null);
+        historyService.record(item);
+
+        var found = historyService.findById("target-id-123");
+        assertTrue(found.isPresent());
+        assertEquals("source.csv", found.get().getSourcePath());
+
+        var notFound = historyService.findById("non-existent");
+        assertFalse(notFound.isPresent());
+    }
+
+    @Test
     void testClearHistory() throws ConverterException {
         historyService.record(new ConversionHistoryItem(
                 "id1", LocalDateTime.now(), "a.csv", "a.json",

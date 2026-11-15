@@ -7,6 +7,7 @@ import hu.mik.prog2.converter.model.FormatType;
 import hu.mik.prog2.converter.service.ConverterService;
 import hu.mik.prog2.converter.service.HistoryService;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
@@ -33,18 +34,19 @@ public class ConsoleMenu {
         boolean running = true;
         while (running) {
             printMainMenu();
-            String choice = prompt("Select an option [1-6]: ");
+            String choice = prompt("Select an option [1-7]: ");
             switch (choice.trim()) {
                 case "1" -> handleSingleFileConversion();
                 case "2" -> handleDirectoryBatchConversion();
                 case "3" -> handleViewHistory();
-                case "4" -> handleShowStatistics();
-                case "5" -> handleClearHistory();
-                case "6" -> {
+                case "4" -> handleReconvertFromHistory();
+                case "5" -> handleShowStatistics();
+                case "6" -> handleClearHistory();
+                case "7" -> {
                     System.out.println("\nExiting DataMorph Converter. Goodbye!");
                     running = false;
                 }
-                default -> System.out.println("Invalid option. Please enter a number between 1 and 6.");
+                default -> System.out.println("Invalid option. Please enter a number between 1 and 7.");
             }
         }
     }
@@ -61,9 +63,10 @@ public class ConsoleMenu {
         System.out.println("1. Convert a single file");
         System.out.println("2. Convert all files in a folder (Batch)");
         System.out.println("3. View conversion history (with sorting)");
-        System.out.println("4. View conversion statistics");
-        System.out.println("5. Clear conversion history");
-        System.out.println("6. Exit");
+        System.out.println("4. Re-convert a file from history");
+        System.out.println("5. View conversion statistics");
+        System.out.println("6. Clear conversion history");
+        System.out.println("7. Exit");
     }
 
     private void handleSingleFileConversion() {
@@ -165,6 +168,80 @@ public class ConsoleMenu {
                     status,
                     Paths.get(item.getSourcePath()).getFileName(),
                     Paths.get(item.getTargetPath()).getFileName());
+        }
+
+        String reconvertPrompt = prompt("\nWould you like to re-convert one of these files? (y/N): ");
+        if (reconvertPrompt.equalsIgnoreCase("y")) {
+            handleReconvertFromHistory();
+        }
+    }
+
+    private void handleReconvertFromHistory() {
+        System.out.println("\n-- Re-convert a File from History --");
+        List<ConversionHistoryItem> items = historyService.getHistorySortedNatural();
+        if (items.isEmpty()) {
+            System.out.println("No conversion history recorded yet.");
+            return;
+        }
+
+        System.out.println("Available past conversions (newest first):");
+        for (int i = 0; i < items.size(); i++) {
+            ConversionHistoryItem it = items.get(i);
+            System.out.printf("[%d] %s -> %s (%s->%s) | %s%n",
+                    i + 1,
+                    Paths.get(it.getSourcePath()).getFileName(),
+                    Paths.get(it.getTargetPath()).getFileName(),
+                    it.getSourceFormat(),
+                    it.getTargetFormat(),
+                    it.isSuccess() ? "OK" : "FAILED");
+        }
+
+        String selStr = prompt("Select item number to re-convert [1-" + items.size() + "] (or 0 to cancel): ");
+        int sel;
+        try {
+            sel = Integer.parseInt(selStr.trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number.");
+            return;
+        }
+
+        if (sel <= 0 || sel > items.size()) {
+            System.out.println("Operation canceled.");
+            return;
+        }
+
+        ConversionHistoryItem selected = items.get(sel - 1);
+        System.out.println("Selected conversion: " + selected.getSourcePath() + " -> " + selected.getTargetPath());
+        System.out.println("1. Use original source file: " + selected.getSourcePath());
+        System.out.println("2. Use previous output file: " + selected.getTargetPath());
+        String fileChoice = prompt("Choose file to convert [1 or 2]: ");
+
+        String chosenPathStr = fileChoice.trim().equals("2") ? selected.getTargetPath() : selected.getSourcePath();
+        Path chosenPath = Paths.get(chosenPathStr);
+
+        if (!Files.exists(chosenPath)) {
+            System.out.println("File does not exist on disk: " + chosenPath);
+            return;
+        }
+
+        String tgtStr = prompt("New target file path (e.g. reconverted_output.xml): ");
+        if (tgtStr.isBlank()) {
+            System.out.println("Target path cannot be empty.");
+            return;
+        }
+
+        Path tgtPath = Paths.get(tgtStr);
+        try {
+            System.out.println("Re-converting: " + chosenPath + " -> " + tgtPath + " ...");
+            ConversionHistoryItem result = converterService.convert(chosenPath, tgtPath);
+            if (result.isSuccess()) {
+                System.out.printf("SUCCESS! Re-converted %d records in %d ms (%d bytes).%n",
+                        result.getRecordCount(), result.getDurationMillis(), result.getFileSizeBytes());
+            } else {
+                System.out.println("RE-CONVERSION FAILED: " + result.getErrorMessage());
+            }
+        } catch (ConverterException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
