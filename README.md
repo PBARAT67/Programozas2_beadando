@@ -12,7 +12,7 @@ In modern software workflows, data is frequently exported, imported, and shared 
 ### The Solution
 DataMorph solves this by providing:
 1. A unified **Intermediate Representation (`Document`)** consisting of structured headers and records.
-2. Interchangeable formatting strategies (**Strategy Pattern**) to parse and serialize CSV, JSON, and XML.
+2. Dynamic format resolution using **Factory Method Pattern** (`FormatStrategyFactory`) providing interchangeable formatting strategies to parse and serialize CSV, JSON, and XML.
 3. An audit logging system that records execution time, record counts, file sizes, and status, and **persists data between application runs** in JSON format.
 4. Flexible sorting and filtering capabilities using `Comparable` and `Comparator`.
 5. An intuitive interactive console interface alongside scriptable CLI command-line arguments.
@@ -30,7 +30,7 @@ DataMorph solves this by providing:
 | **Collections & Generics** | Heavy use of `List<DocumentRecord>`, `Map<String, String>`, and `Set<String>`. Custom generic class `BatchResult<T>` captures batch outcomes. Sorting implemented with `Comparable<ConversionHistoryItem>` (natural sort: newest first) and multiple `Comparator<ConversionHistoryItem>` lambdas (by duration, size, name, status). |
 | **Exceptions** | Domain exception hierarchy: `ConverterException` (checked base), `UnsupportedFormatException`, and `InvalidFileStructureException` (stores line number and structural failure causes). |
 | **Persistence** | `JsonHistoryRepository` restores and persists conversion history between runs to `history.json`. All file I/O uses strict `try-with-resources`. |
-| **Design Pattern** | **Strategy Pattern** (interchangeable format algorithms) & **Factory Method** (`FormatStrategyFactory`). |
+| **Design Pattern** | **Factory Pattern / Factory Method** (`FormatStrategyFactory`) as primary pattern for object creation & **Strategy Pattern** for interchangeable format algorithms. |
 | **Testing** | 18 automated **JUnit 5** tests covering parsing, writing, exceptions, batch processing, sorting, and history lookups. |
 | **Build** | Standard Maven project with reproducible build (`mvn clean package`). |
 
@@ -38,19 +38,21 @@ DataMorph solves this by providing:
 
 ## 3. Design Pattern Explanation
 
-### Pattern Chosen: Strategy Pattern (GoF)
-- **Problem it solves:** Different file formats require fundamentally different parsing and writing algorithms. Hardcoding format conversions using `if-else` or `switch` statements inside business logic would violate the Open/Closed Principle (OCP) and lead to fragile, tightly-coupled code.
+### Pattern Chosen: Factory Pattern / Factory Method (GoF)
+- **Problem it solves:** In a multi-format conversion system, client components (such as `ConverterService` or `ConsoleMenu`) should not be tightly coupled to concrete parser/serializer implementations (`CsvFormatStrategy`, `JsonFormatStrategy`, `XmlFormatStrategy`). Instantiating these classes directly with `new` across the application would create brittle code, duplicate format-detection logic, and violate the Dependency Inversion and Open/Closed Principles.
 - **Participating Classes:**
-  - `FormatStrategy`: The Strategy interface defining `Document parse(InputStream in)` and `void write(Document doc, OutputStream out)`.
-  - `AbstractFormatStrategy`: Base class with shared stream utilities.
-  - `CsvFormatStrategy`, `JsonFormatStrategy`, `XmlFormatStrategy`: Concrete strategy implementations containing format-specific parsing and serialization logic.
-  - `ConverterService`: The Context class that executes conversions polymorphically without knowing the concrete format implementation details.
+  - `FormatStrategyFactory`: The Factory class providing `getStrategy(FormatType)` and the resolution method `getStrategyForPath(Path)`.
+  - `FormatStrategy`: The common product abstraction/interface returned by the factory.
+  - `AbstractFormatStrategy`: Base product class providing shared stream and validation capabilities.
+  - `CsvFormatStrategy`, `JsonFormatStrategy`, `XmlFormatStrategy`: Concrete products instantiated and registered within the factory.
+  - `ConverterService`: The client that consumes format handlers solely through the factory abstraction without knowing concrete product types.
 - **Benefits in this Design:**
-  - Adding a new format (e.g., YAML, TSV) requires only creating a new class implementing `FormatStrategy` without modifying existing conversion code.
-  - Format-specific logic is isolated and independently unit-testable.
+  - **Decoupling Creation from Usage:** Client code never calls `new CsvFormatStrategy()`; it asks the factory for a handler matching a path or format enum.
+  - **Single Responsibility Principle (SRP):** File extension resolution, MIME matching, and strategy lifecycle management reside entirely in one place.
+  - **Extensibility (Open/Closed Principle):** Supporting a new format (e.g. YAML) requires only registering a new `FormatStrategy` product into the factory registry without modifying any client logic.
 
-### Supporting Pattern: Factory Method
-- `FormatStrategyFactory` centralizes the resolution and instantiation of format strategies from file extensions or MIME types.
+### Supporting Pattern: Strategy Pattern
+- The created products implement `FormatStrategy`, allowing interchangeable parsing and writing behavior polymorphically at runtime.
 
 ---
 
